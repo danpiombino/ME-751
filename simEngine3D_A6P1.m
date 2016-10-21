@@ -10,6 +10,9 @@
 
 %% DP2
 
+clear;
+clc;
+
 q = zeros(14,1); %[r1 r2 .... p1 p2 ...]'
 q_d = zeros(14,1); %[r1_dot r2_dot ... p1_dot p2_dot ...]'
 sp_ib1 = [1 1 1]'; %[x y z]' vector of point p in local reference frame i

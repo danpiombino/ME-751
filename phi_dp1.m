@@ -56,9 +56,9 @@ else
 end
 
 % Theta 
-f = norm(ai_b)*norm(aj_b)*cos(theta(1));
-f_d = -norm(ai_b)*norm(aj_b)*sin(theta(1))*theta(2);     
-f_dd = -norm(ai_b)*norm(aj_b)*(cos(theta(1))*theta(2)^2+sin(theta(1))*theta(3));
+f = norm(ai)*norm(aj)*cos(theta(1));
+f_d = -norm(ai)*norm(aj)*sin(theta(1))*theta(2);     
+f_dd = -norm(ai)*norm(aj)*(cos(theta(1))*theta(2)^2+sin(theta(1))*theta(3));
 
 %% Evaluate Quantities
 
@@ -70,7 +70,11 @@ phi_r = zeros(1,3*nb);  %by definition for DP1
 phi_p = zeros(1,4*nb);
 phi_pi = aj_b'*Aj'*Bi;
 phi_pj = ai_b'*Ai'*Bj;
-phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
-phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+if i ~= 0
+    phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
+end
+if j ~= 0
+    phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+end
 phi_q = [phi_r phi_p];
 end

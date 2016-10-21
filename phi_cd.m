@@ -66,17 +66,21 @@ end
 %% Evaluate Quantities
 phi = c'*(rj+Aj*sq_jb-ri-Ai*sp_ib)-dis(1);
 nu = -c'*(rj_d+Bj*pj_d-ri_d-Bi*pi_d)+dis(2);
-gamma = c'*(Bi_d*pi_d-Bj_d*pj_d)+dis(3);\
+gamma = c'*(Bi_d*pi_d-Bj_d*pj_d)+dis(3);
 
 phi_r = zeros(1,3*nb);
 phi_ri = -c';
 phi_rj = c';
-phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
-phi_r(3*(j-1)+1:3*(j-1)+3) = phi_rj;
 phi_p = zeros(1,4*nb);
 phi_pi = -c'*Bi;
 phi_pj = c'*Bi;
-phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
-phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+if i ~= 0
+    phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
+    phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
+end
+if j ~= 0
+    phi_r(3*(j-1)+1:3*(j-1)+3) = phi_rj;
+    phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+end
 phi_q = [phi_r phi_p];
 end

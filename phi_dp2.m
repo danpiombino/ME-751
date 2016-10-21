@@ -67,26 +67,35 @@ else
     pj_d = q_d([4*(j-1)+3*nb+1:4*(j-1)+3*nb+4]);
 end
 
+d = rj+Aj*sq_jb-ri-Ai*sp_ib; %vector from point p to q
+d_d = rj_d+Bjq*pj_d-ri_d-Bip*pi_d; %derivative of vector from point p to q
+
 % Theta 
-f = norm(ai_b)*norm(aj_b)*cos(theta(1));
-f_d = -norm(ai_b)*norm(aj_b)*sin(theta(1))*theta(2);     
-f_dd = -norm(ai_b)*norm(aj_b)*(cos(theta(1))*theta(2)^2+sin(theta(1))*theta(3));
+f = norm(ai)*norm(d)*cos(theta(1));
+f_d = -norm(ai)*norm(d)*sin(theta(1))*theta(2);     
+f_dd = -norm(ai)*norm(d)*(cos(theta(1))*theta(2)^2+sin(theta(1))*theta(3));
 
 %% Evaluate Quantities
 
-phi = ai'*(rj+Aj*sq_jb-ri-Ai*sp_ib)-f;
-nu = -ai'*(rj_d+Bjq*pj-ri_d-Bip*pi_d)-(rj+Aj*sq_jb-ri-Ai*sp_ib)'*Bia*pi_d+f_d; %nu = -phi_t
-gamma = -ai'*Bjq_d*pj_d+ai'*Bip_d*pi_d-(rj+Aj*sq_jb-ri-Ai*sp_ib)'*Bia_d*pi_d-2*(Bia*pi_d)'*(rj_d+Bjq*pj-ri_d-Bip*pi_d)+f_dd;
+phi = ai'*d-f;
+nu = -ai'*d_d-d'*Bia*pi_d+f_d; %nu = -phi_t
+gamma = -ai'*Bjq_d*pj_d+ai'*Bip_d*pi_d-d'*Bia_d*pi_d-2*(Bia*pi_d)'*d_d+f_dd;
 
 phi_r = zeros(1,3*nb);
 phi_ri = -ai';
 phi_rj = ai';
-phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
-phi_r(3*(j-1)+1:3*(j-1)+3) = phi_rj;
 phi_p = zeros(1,4*nb);
 phi_pi = -ai'*Bip-sp_ib'*Ai'*Bia;
 phi_pj = ai'*Bjq;
-phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
-phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+
+if i ~= 0
+    phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
+    phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
+end
+if j ~= 0
+    phi_r(3*(j-1)+1:3*(j-1)+3) = phi_rj;
+    phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+end
+
 phi_q = [phi_r phi_p];
 end

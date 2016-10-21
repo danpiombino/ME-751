@@ -27,6 +27,6 @@ end
 nb = length(q)/7;
 e_til = skew3(e(2:end));
 ai_b_til = skew3(ai_b);
-Bi(1,1) = 2*(e(1)*eye(3)+e_til)*ai_b;
-Bi(1,2) = 2*(e(2:end)*ai_b'-(e(1)*eye(3)+e_til)*ai_b_til);
+Bi(:,1) = 2*(e(1)*eye(3)+e_til)*ai_b;
+Bi(:,2:4) = 2*(e(2:end)*ai_b'-(e(1)*eye(3)+e_til)*ai_b_til);
 end

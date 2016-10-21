@@ -72,12 +72,16 @@ gamma = -2*d'*Bj_d*pj_d+2*d'*Bi_d*pi_d-2*d_d'*d_d+dis(3);
 phi_r = zeros(1,3*nb);
 phi_ri = -d';
 phi_rj = d';
-phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
-phi_r(3*(j-1)+1:3*(j-1)+3) = phi_rj;
 phi_p = zeros(1,4*nb);
 phi_pi = -d'*Bi;
 phi_pj = d'*Bj;
-phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
-phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+if i ~= 0
+    phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
+    phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
+end
+if j ~= 0
+    phi_r(3*(j-1)+1:3*(j-1)+3) = phi_rj;
+    phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
+end
 phi_q = [phi_r phi_p];
 end
