@@ -63,13 +63,13 @@ f_dd = -norm(ai)*norm(aj)*(cos(theta(1))*theta(2)^2+sin(theta(1))*theta(3));
 %% Evaluate Quantities
 
 phi = ai_b'*Ai'*Aj*aj_b-f;
-nu = -ai'*Bj*pj_d-aj'*Bi*pi_d+f_d; %nu = -phi_t
+nu = f_d;
 gamma = -ai'*Bj_d*pj_d-aj'*Bi_d*pi_d-2*(Bi*pi_d)'*(Bj*pj_d)+f_dd;
 
 phi_r = zeros(1,3*nb);  %by definition for DP1
 phi_p = zeros(1,4*nb);
-phi_pi = aj_b'*Aj'*Bi;
-phi_pj = ai_b'*Ai'*Bj;
+phi_pi = aj'*Bi; 
+phi_pj = ai'*Bj;
 if i ~= 0
     phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
 end

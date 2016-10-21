@@ -156,6 +156,7 @@ ylabel('Acceleration [m/s^2]')
 xlabel('Time [s]')
 legend('Global X','Global Y','Global Z')
 
+
 figure
 hold on
 plot(t,Q(1,:))

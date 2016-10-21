@@ -18,19 +18,19 @@ function [phi,nu,gamma,phi_r,phi_p] = phi_ep(q,q_d,i)
 %% Setup
 
 nb = length(q)/7;
-pi = q([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
-pi_d = q_d([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
+p = q([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
+p_d = q_d([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
 
 
 %% Evaluate Quantities
 
-phi = pi'*pi-1;
+phi = p'*p-1;
 nu = 0; %nu = -phi_t
-gamma = -2*pi_d'*pi_d;
+gamma = -2*p_d'*p_d;
 
 phi_r = zeros(1,3*nb);  %by definition
 phi_p = zeros(1,4*nb);
-phi_pi = 2*pi';
+phi_pi = 2*p';
 if i ~= 0
     phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
 end

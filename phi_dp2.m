@@ -78,14 +78,15 @@ f_dd = -norm(ai)*norm(d)*(cos(theta(1))*theta(2)^2+sin(theta(1))*theta(3));
 %% Evaluate Quantities
 
 phi = ai'*d-f;
-nu = -ai'*d_d-d'*Bia*pi_d+f_d; %nu = -phi_t
+% nu = -ai'*d_d-d'*Bia*pi_d+f_d; %nu = -phi_t
+nu = f_d;
 gamma = -ai'*Bjq_d*pj_d+ai'*Bip_d*pi_d-d'*Bia_d*pi_d-2*(Bia*pi_d)'*d_d+f_dd;
 
 phi_r = zeros(1,3*nb);
 phi_ri = -ai';
 phi_rj = ai';
 phi_p = zeros(1,4*nb);
-phi_pi = -ai'*Bip-sp_ib'*Ai'*Bia;
+phi_pi = -ai'*Bip+d'*Bia;
 phi_pj = ai'*Bjq;
 
 if i ~= 0

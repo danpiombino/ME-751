@@ -66,15 +66,16 @@ d_d = rj_d+Bj*pj_d-ri_d-Bi*pi_d; %derivative of vector from point p to q
 
 %% Evaluate Quantities
 phi = d'*d-dis(1);
-nu = -2*d'*d_d+dis(2);
+% nu = -2*d'*d_d+dis(2);
+nu = dis(2);
 gamma = -2*d'*Bj_d*pj_d+2*d'*Bi_d*pi_d-2*d_d'*d_d+dis(3);
 
 phi_r = zeros(1,3*nb);
-phi_ri = -d';
-phi_rj = d';
+phi_ri = -2*d';
+phi_rj = 2*d';
 phi_p = zeros(1,4*nb);
-phi_pi = -d'*Bi;
-phi_pj = d'*Bj;
+phi_pi = -2*d'*Bi;
+phi_pj = 2*d'*Bj;
 if i ~= 0
     phi_r(3*(i-1)+1:3*(i-1)+3) = phi_ri;
     phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
