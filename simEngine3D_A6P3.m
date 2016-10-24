@@ -2,7 +2,7 @@
 % creates model for HW6 Problem 3
 %
 % Written by: Dan Piombino
-% 10/20/16
+% 10/24/16
 
 clear;
 clc;
@@ -46,68 +46,52 @@ for nt = 1:T/dt+1
     clear phi phi_q phi_r phi_p
     while n == 1
         %Kinematic Constraints
-        [phi(1,k),~,~,phi_r(1,:),phi_p(1,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,az_ib,ay_jb,th2);
-        [phi(2,k),~,~,phi_r(2,:),phi_p(2,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c1,dis); %fixed in x
-        [phi(3,k),~,~,phi_r(3,:),phi_p(3,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c2,dis); %fixed in y
-        [phi(4,k),~,~,phi_r(4,:),phi_p(4,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c3,dis); %fixed in z
-        [phi(5,k),~,~,phi_r(5,:),phi_p(5,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,az_ib,az_jb,th2);
+        [phi(1,k),nu(1,1),gamma(1,1),phi_r(1,:),phi_p(1,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,az_ib,ay_jb,th2);
+        [phi(2,k),nu(2,1),gamma(2,1),phi_r(2,:),phi_p(2,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c1,dis); %fixed in x
+        [phi(3,k),nu(3,1),gamma(3,1),phi_r(3,:),phi_p(3,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c2,dis); %fixed in y
+        [phi(4,k),nu(4,1),gamma(4,1),phi_r(4,:),phi_p(4,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c3,dis); %fixed in z
+        [phi(5,k),nu(5,1),gamma(5,1),phi_r(5,:),phi_p(5,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,az_ib,az_jb,th2);
         %Driving Constraints
-        if abs(theta(1,nt))*180/pi >= 10
-            [phi(6,k),~,~,phi_r(6,:),phi_p(6,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,ax_ib,-az_jb,theta(:,nt));
+        if abs(theta(1,nt))*180/pi >= 10 %Change reference angle to avoid singularities
+            [phi(6,k),nu(6,1),gamma(6,1),phi_r(6,:),phi_p(6,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,ax_ib,-az_jb,theta(:,nt));
         else
             thetadev = theta(:,nt);
             thetadev(1) = theta(1,nt)+pi/4;
-            [phi(6,k),~,~,phi_r(6,:),phi_p(6,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,ax_ib,ar_jb,thetadev);
+            [phi(6,k),nu(6,1),gamma(6,1),phi_r(6,:),phi_p(6,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,ax_ib,ar_jb,thetadev);
         end
         %Euler Parameter Constraints
-        [phi(7,k),~,~,phi_r(7,:),phi_p(7,:)] = phi_ep(q(:,nt),q_d(:,nt),i);
-        phi_q = [phi_r phi_p];
+        [phi(7,k),nu(7,1),gamma(7,1),phi_r(7,:),phi_p(7,:)] = phi_ep(q(:,nt),q_d(:,nt),i);
+        phi_q = [phi_r phi_p]; %Combined Jacobian
         
         dum1 = 1;
         dum2 = 1;
         for n2 = 1:size(phi,1);
-            if abs(phi(n2,k)) >= 0.001 %are any phi values still not zero?
+            if abs(phi(n2,k)) >= 1e-8 %are any phi values still not zero?
                 dum1 = 0; %if so, do not stop while loop
             end
             if k > 1
-                if abs(phi(n2,k)-phi(n2,k-1)) >= 1e-4 %are any phi values still changing significantly?
+                if abs(phi(n2,k)-phi(n2,k-1)) >= 1e-10 %are any phi values still changing significantly?
                     dum2 = 0; %if so, do not stop while loop
                 end
             else
                 dum2 = 0;
             end
         end
-        if dum1 == 1 %if every value of phi is below 0.001
+        if dum1 == 1 %if every value of phi is below threshold
             n = 0;
         elseif dum2 == 1 %if every value of phi has converged to SOMETHING
             n = 0;
         elseif k > 1000 %if iteration limit is reached
             error('The solver failed to converge')
         else
-            q(:,nt) = q(:,nt)-(phi_q^-1)*phi(:,k);
+            q(:,nt) = q(:,nt)-(phi_q^-1)*phi(:,k); %Newton-Raphson
+            q_d(:,nt) = inv(phi_q)*nu; %Update q_dot
+            q_dd(:,nt) = inv(phi_q)*gamma; %update q_doubledot
             k = k+1;
         end
     end
     
-    %Kinematic Constraints
-    [~,nu(1,1),gamma(1,1),phi_r(1,:),phi_p(1,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,az_ib,ax_jb,[0 0 0]');
-    [~,nu(2,1),gamma(2,1),phi_r(2,:),phi_p(2,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c1,dis); %fixed in x
-    [~,nu(3,1),gamma(3,1),phi_r(3,:),phi_p(3,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c2,dis); %fixed in y
-    [~,nu(4,1),gamma(4,1),phi_r(4,:),phi_p(4,:)] = phi_cd(q(:,nt),q_d(:,nt),i,j,sq_ib,so_jb,c3,dis); %fixed in z
-    [~,nu(5,1),gamma(5,1),phi_r(5,:),phi_p(5,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,az_ib,az_jb,th2);
-    %Driving Constraints
-    if abs(theta(1,nt))*180/pi >= 10
-        [~,nu(6,1),gamma(6,1),phi_r(6,:),phi_p(6,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,ax_ib,-az_jb,theta(:,nt));
-    else
-        [~,nu(6,1),gamma(6,1),phi_r(6,:),phi_p(6,:)] = phi_dp1(q(:,nt),q_d(:,nt),i,j,ax_ib,ar_jb,thetadev);
-    end
-    %Euler Parameter Constraints
-    [~,nu(7,1),gamma(7,1),phi_r(7,:),phi_p(7,:)] = phi_ep(q(:,nt),q_d(:,nt),i);
-    phi_q = [phi_r phi_p];
-    
-    q_d(:,nt) = (phi_q^-1)*nu;
-    q_dd(:,nt) = (phi_q^-1)*gamma;
-    
+    %Desired Quantities @ step nt
     Bi = bmat(q(:,nt),i,sq_ib);
     Bi_d = bmat(q_d(:,nt),i,sq_ib);
     A = orient(q(:,nt),i);
@@ -119,12 +103,15 @@ for nt = 1:T/dt+1
     Q_d(:,nt) = Op_d(:,nt)+Bi*q_d(4:7,nt);
     Q_dd(:,nt) = Op_dd(:,nt)+Bi_d*q_d(4:7,nt)+Bi*q_dd(4:7,nt);
     
+    %Set up next iteration
     if nt < T/dt+1
         q(:,nt+1) = q(:,nt); %initial guess for nt+1 = converged answer for nt
         q_d(:,nt+1) = q_d(:,nt);
         q_dd(:,nt+1) = q_dd(:,nt);
     end
 end
+
+%% Plot
 
 figure
 hold on
