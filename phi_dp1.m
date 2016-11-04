@@ -34,10 +34,10 @@ Bi = bmat(q,i,ai_b);
 Bi_d = bmat(q_d,i,ai_b);
 
 if i == 0
-    pi = [1 0 0 0]'; %by definition
+    p_i = [1 0 0 0]'; %by definition
     pi_d = zeros(4,1); %by definition
 else
-    pi = q([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
+    p_i = q([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
     pi_d = q_d([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
 end
 
@@ -48,10 +48,10 @@ Bj = bmat(q,j,aj_b);
 Bj_d = bmat(q_d,j,aj_b);
 
 if j == 0
-    pj = [1 0 0 0]'; %by definition
+    p_j = [1 0 0 0]'; %by definition
     pj_d = zeros(4,1); %by definition
 else
-    pj = q([4*(j-1)+3*nb+1:4*(j-1)+3*nb+4]);
+    p_j = q([4*(j-1)+3*nb+1:4*(j-1)+3*nb+4]);
     pj_d = q_d([4*(j-1)+3*nb+1:4*(j-1)+3*nb+4]);
 end
 
