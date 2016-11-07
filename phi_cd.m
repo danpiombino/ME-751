@@ -57,8 +57,8 @@ if j == 0
     pj = [1 0 0 0]'; %by definition
     pj_d = zeros(4,1); %by definition
 else
-    rj = q([3*(i-1)+1:3*(i-1)+3]);
-    rj_d = q_d([3*(i-1)+1:3*(i-1)+3]);
+    rj = q([3*(j-1)+1:3*(j-1)+3]);
+    rj_d = q_d([3*(j-1)+1:3*(j-1)+3]);
     pj = q([4*(j-1)+3*nb+1:4*(j-1)+3*nb+4]);
     pj_d = q_d([4*(j-1)+3*nb+1:4*(j-1)+3*nb+4]);
 end

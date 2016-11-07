@@ -32,7 +32,7 @@ c2 = [0 1 0]';
 c3 = [0 0 1]';
 dis = zeros(3,1);
 th2 = [pi/2 0 0]';
-h = 1e-3 %time step
+h = 1e-2 %time step
 T = 10; %length of simulation
 nb = 1;
 
@@ -132,7 +132,7 @@ tau_b = 2*G1'*n_b+8*G1_d'*J1_b*G1_d*q([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4],nt); %with
 %Reaction forces @ time t=0
 R = -phi_q'*lam(:,nt);
 Fr_1Op(:,nt) = R(1:3); %Reaction forces at local origin (global reference frame)
-nr_Op(:,nt) = A1*0.5*G1*R(4:end); %reaction torques at local origin in local frame
+nr_Op(:,nt) = A1*0.5*G1*R(4:end); %reaction torques at local origin in global frame
 Fr_Q(:,nt) = Fr_1Op(:,nt); %Reaction forces at point Q in global frame
 nr_Q(:,nt) = A1*(skew3(-sq_ib)*A1'*Fr_1Op(:,nt))+nr_Op(:,nt); %Reaction torques at point Q in global frame
 % clear R Fr_1b nr_1b
@@ -157,7 +157,7 @@ for nt = 2:T/h+1
     
     n = 1;
     k = 1;
-    clear phi phi_q phi_r phi_p
+    clear phi phi_q phi_r phi_p res
     while n == 1
         
         %BDF to get q_d and q
@@ -241,10 +241,10 @@ for nt = 2:T/h+1
         else %if not converged
             %Compute psi
             psi = qnpsi(M,J1p,phi_q);
-            [r_dd,p_dd] = q2rp(q_dd(:,nt));
-            z = [r_dd;p_dd;lam(:,nt)];
+            z = [q_dd(:,nt);lam(:,nt)];
             z = z-inv(psi)*res(:,k);
             [q_dd(:,nt),lam(:,nt)] = decz(z,nb);
+            k = k+1;
             clear r_dd p_dd
         end
     end %end of while loop
@@ -266,7 +266,7 @@ for nt = 2:T/h+1
     Q_dd(:,nt) = Op_dd(:,nt)+Bi_d*q_d(4:7,nt)+Bi*q_dd(4:7,nt);
 end
 
-trun = toc;
+trun = toc
 
 %% Plot Results
 

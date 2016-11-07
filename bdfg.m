@@ -28,7 +28,6 @@ function res = bdfg(M,Jp,q_dd,F,tau,h,beta,phi,phi_q,lam)
 
 nb = length(q_dd)/7;
 nc = length(phi)-nb;
-[r_dd,p_dd] = q2rp(q_dd);
 phi_r = phi_q(1:nc,1:3*nb);
 phi_p = phi_q(1:nc,3*nb+1:end);
 P = phi_q(nc+1:end,3*nb+1:end);
@@ -36,7 +35,7 @@ lambda = lam(1:nc);
 lamp = lam(nc+1:end);
 a = (1/(h^2)*(beta^2));
 
-res = [M*r_dd+phi_r'*lambda-F;Jp*p_dd+phi_p'*lambda+P'*lamp-tau;a*phi];
+res = [M*q_dd(1:3*nb)+phi_r'*lambda-F;Jp*q_dd(3*nb+1:end)+phi_p'*lambda+P'*lamp-tau;a*phi];
 end
 
 

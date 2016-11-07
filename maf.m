@@ -41,7 +41,7 @@ phi_p = phi_q(1:nc,3*nb+1:end);
 P = phi_q(nc+1:end,3*nb+1:end);
 
 LHS = [M z12 phi_r' z14;z21 Jp phi_p' P';phi_r phi_p z33 z34;z41 P z43 z44];
-RHS = [F;tau;gamma(end);gamma(1:end-1)];
+RHS = [F;tau;gamma];
 z = inv(LHS)*RHS;
 [q_dd,lam] = decz(z,nb);
 end

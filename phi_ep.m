@@ -24,13 +24,13 @@ p_d = q_d([4*(i-1)+3*nb+1:4*(i-1)+3*nb+4]);
 
 %% Evaluate Quantities
 
-phi = p'*p-1;
+phi = 0.5*(p'*p-1);
 nu = 0; %nu = -phi_t
-gamma = -2*p_d'*p_d;
+gamma = -p_d'*p_d;
 
 phi_r = zeros(1,3*nb);  %by definition
 phi_p = zeros(1,4*nb);
-phi_pi = 2*p';
+phi_pi = p';
 if i ~= 0
     phi_p(4*(i-1)+1:4*(i-1)+4) = phi_pi;
 end
