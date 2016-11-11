@@ -1,4 +1,4 @@
-function [phi,nu,gamma,phi_r,phi_p] = phi_dp1(q,q_d,i,j,ai_b,aj_b,theta)
+function [phi,nu,gamma,phi_r,phi_p,rf_q] = phi_dp1(q,q_d,i,j,ai_b,aj_b,theta,lam)
 % Calculates parameters associated with DP1 constraint between coordinate
 % systems i and j
 % 
@@ -77,4 +77,25 @@ if j ~= 0
     phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
 end
 phi_q = [phi_r phi_p];
+
+if ~isempty(lam)
+    rf_q = zeros(7*nb,7*nb);
+    Ki = kmat(ai_b,aj);
+    Kj = kmat(aj_b,ai);
+    
+    if i ~= 0
+        rf_q(3*nb+4*(i-1)+1:3*nb+4*(i-1)+4,3*nb+4*(i-1)+1:3*nb+4*(i-1)+4) = Ki;
+    end
+    if j ~= 0
+        rf_q(3*nb+4*(j-1)+1:3*nb+4*(j-1)+4,3*nb+4*(j-1)+1:3*nb+4*(j-1)+4) = Kj;
+    end
+    if i~=0 && j~=0
+        rf_q(3*nb+4*(i-1)+1:3*nb+4*(i-1)+4,3*nb+4*(j-1)+1:3*nb+4*(j-1)+4) = Bi'*Bj;
+        rf_q(3*nb+4*(j-1)+1:3*nb+4*(j-1)+4,3*nb+4*(i-1)+1:3*nb+4*(i-1)+4) = Bj'*Bi;
+    end
+    rf_q = lam*rf_q;
+else
+    rf_q = [];
+end
+
 end

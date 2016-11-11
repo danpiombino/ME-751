@@ -1,4 +1,4 @@
-function [phi,nu,gamma,phi_r,phi_p] = phi_cd(q,q_d,i,j,sp_ib,sq_jb,c,dis)
+function [phi,nu,gamma,phi_r,phi_p,rf_q] = phi_cd(q,q_d,i,j,sp_ib,sq_jb,c,dis,lam)
 % Calculates parameters associated with DP1 constraint between coordinate
 % systems i and j
 % 
@@ -84,4 +84,20 @@ if j ~= 0
     phi_p(4*(j-1)+1:4*(j-1)+4) = phi_pj;
 end
 phi_q = [phi_r phi_p];
+
+if ~isempty(lam)
+    rf_q = zeros(7*nb,7*nb);
+    Ki = kmat(sp_ib,c);
+    Kj = kmat(sq_jb,c);
+    
+    if i ~= 0
+        rf_q(3*nb+4*(i-1)+1:3*nb+4*(i-1)+4,3*nb+4*(i-1)+1:3*nb+4*(i-1)+4) = -Ki;
+    end
+    if j ~= 0
+        rf_q(3*nb+4*(j-1)+1:3*nb+4*(j-1)+4,3*nb+4*(j-1)+1:3*nb+4*(j-1)+4) = Kj;
+    end
+    rf_q = lam*rf_q;
+else
+    rf_q = [];
+end
 end
