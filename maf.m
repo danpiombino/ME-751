@@ -1,6 +1,7 @@
 function [q_dd,lam] = maf(M,Jp,phi_q,F,tau,gamma)
 % function [q_dd,lam] = maf(M,Jp,phi_q,F,tau,gamma)
 % calculates "a = inv(m)*F"
+% Used for euqilibrium or inverse dynamics problems
 % NOTE: Constraints MUST be in order of: all kinematic
 %       constraints, then all euler parameterization constraints
 % 
@@ -27,20 +28,11 @@ function [q_dd,lam] = maf(M,Jp,phi_q,F,tau,gamma)
 nb = length(M)/3;
 nc = length(gamma)-nb;
 
-z12 = zeros(3*nb,4*nb);
-z14 = zeros(3*nb,nb);
-z21 = zeros(4*nb,3*nb);
-z33 = zeros(nc,nc);
-z34 = zeros(nc,nb);
-z41 = zeros(nb,3*nb);
-z43 = zeros(nb,nc);
-z44 = zeros(nb,nb);
-
-phi_r = phi_q(1:nc,1:3*nb);
-phi_p = phi_q(1:nc,3*nb+1:end);
-P = phi_q(nc+1:end,3*nb+1:end);
-
-LHS = [M z12 phi_r' z14;z21 Jp phi_p' P';phi_r phi_p z33 z34;z41 P z43 z44];
+LHS = zeros(8*nb+nc,8*nb+nc);
+LHS(1:3*nb,1:3*nb) = M;
+LHS(3*nb+1:7*nb,3*nb+1:7*nb) = Jp;
+LHS(7*nb+1:end,1:7*nb) = phi_q;
+LHS(1:7*nb,7*nb+1:end) = phi_q';
 RHS = [F;tau;gamma];
 z = inv(LHS)*RHS;
 [q_dd,lam] = decz(z,nb);

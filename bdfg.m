@@ -33,7 +33,7 @@ phi_p = phi_q(1:nc,3*nb+1:end);
 P = phi_q(nc+1:end,3*nb+1:end);
 lambda = lam(1:nc);
 lamp = lam(nc+1:end);
-a = (1/(h^2)*(beta^2));
+a = 1/((h^2)*(beta^2));
 
 res = [M*q_dd(1:3*nb)+phi_r'*lambda-F;Jp*q_dd(3*nb+1:end)+phi_p'*lambda+P'*lamp-tau;a*phi];
 end

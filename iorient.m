@@ -7,6 +7,7 @@ function p = iorient(A)
 % Outputs:  p = euler parameter representation of reference frame i
 %                   [e0 e1 e2 e3]'
 %
+% NOTE: DOESN'T WORK FOR 180 DEG ROTATIONS
 % Written by: Dan Piombino
 % 10/20/16
 
